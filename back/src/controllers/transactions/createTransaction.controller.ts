@@ -1,8 +1,11 @@
-import { FastifyReply, FastifyRequest } from "fastify";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
-export const createTransaction = async (request: FastifyRequest, reply: FastifyReply):Promise<void>=> {
-    const userId = "FDGF!DH@f3"
-    if(!userId) {
-        reply.status(401).send({ error: "Unauthorized" });
-    }
-}
+export const createTransaction = async (
+	_request: FastifyRequest,
+	reply: FastifyReply,
+): Promise<void> => {
+	const userId = "FDGF!DH@f3";
+	if (!userId) {
+		reply.status(401).send({ error: "Unauthorized" });
+	}
+};

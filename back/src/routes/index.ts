@@ -6,5 +6,5 @@ export async function routes(fastify: FastifyInstance): Promise<void> {
 		return { message: "Welcome to the Fastify server!", status: "healthy" };
 	});
 	fastify.register(categoryRoutes, { prefix: "/categories" });
-	fastify.register(transactionRoutes, { prefix: "/transaction" });
+	fastify.register(transactionRoutes, { prefix: "/transactions" });
 }
