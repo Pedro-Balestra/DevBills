@@ -1,8 +1,8 @@
-import Fastify, { FastifyInstance } from 'fastify';
-import { routes } from './routes';
+import Fastify, { type FastifyInstance } from "fastify";
+import { routes } from "./routes";
 
 export const app: FastifyInstance = Fastify({
-    logger: true,
-})
+	logger: true,
+});
 
-app.register(routes);
+app.register(routes,{prefix: "/api"});
