@@ -37,8 +37,15 @@ export const getTransactionsSchema = z.object({
 export const getTransactionSummarySchema = z.object({
 	month: z.string({ message: "O mês é obrigatorio" }),
 	year: z.string({ message: "O ano é obrigatorio" }),
-})
+});
+
+export const deleteTransactionSchema = z.object({
+	id: z.string().refine(isValidObectId, {
+		message: "ID de transação inválido",
+	}),
+});
 
 export type CreateTransactionSchema = z.infer<typeof createTransactionSchema>;
 export type GetTransactionSchema = z.infer<typeof getTransactionsSchema>;
 export type GetTransactionSummarySchema = z.infer<typeof getTransactionSummarySchema>;
+export type DeleteTransactionSchema = z.infer<typeof deleteTransactionSchema>;

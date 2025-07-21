@@ -2,6 +2,7 @@
 import type { FastifyPluginAsync } from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { createTransaction } from '../controllers/transactions/createTransaction.controller';
+import { deleteTransaction } from '../controllers/transactions/deleteTransaction.controller';
 import { getTransactions } from '../controllers/transactions/getTransaction.controller';
 import { getTransactionSummary } from '../controllers/transactions/getTransactionSummary.controller';
 
@@ -22,6 +23,11 @@ export const transactionRoutes: FastifyPluginAsync = async (fastify) => {
 	app.get(
 		'/summary',
 		getTransactionSummary
+	);
+
+	app.delete(
+		'/:id',
+		deleteTransaction
 	);
 };
 
