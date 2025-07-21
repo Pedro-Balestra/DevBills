@@ -34,3 +34,11 @@
 body {
     @apply bg-gray-950 text-gray-50 min-h-screen font-sans antialiased;
 }
+
+.container-app{
+    @apply max-w-7xl m-auto px-4;
+}
+
+.section-app{
+    @apply py-12 md:py-20
+}
