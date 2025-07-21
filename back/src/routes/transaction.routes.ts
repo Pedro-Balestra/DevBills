@@ -1,26 +1,21 @@
-import type { FastifyInstance } from 'fastify';
-import zodToJsonSchema from 'zod-to-json-schema';
+// src/routes/transaction.routes.ts
+import type { FastifyPluginAsync } from 'fastify';
+import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { createTransaction } from '../controllers/transactions/createTransaction.controller';
 import { getTransactions } from '../controllers/transactions/getTransaction.controller';
-import { createTransactionSchema, getTransactionsSchema } from './../schemas/transaction.schema';
 
-export const transactionRoutes = async (fastify: FastifyInstance): Promise<void> => {
-	// Define the route for creating a transaction
-	fastify.route({
-		method: 'POST',
-		url: '/',
-		schema: {
-			body: zodToJsonSchema(createTransactionSchema),
-		},
-		handler: createTransaction,
-	});
-	// Define the route for getting transaction by date
-	fastify.route({
-		method: 'GET',
-		url: '/',
-		schema: {
-			querystring: zodToJsonSchema(getTransactionsSchema),
-		},
-		handler: getTransactions,
-	});
+// 🔧 TROCAR FastifyInstance por FastifyInstance com o Zod provider
+export const transactionRoutes: FastifyPluginAsync = async (fastify) => {
+	const app = fastify.withTypeProvider<ZodTypeProvider>();
+
+	app.post(
+		'/',
+		createTransaction
+	);
+
+	app.get(
+		'/',
+		getTransactions
+	);
 };
+

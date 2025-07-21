@@ -9,8 +9,7 @@ export const createTransaction = async (
 	request: FastifyRequest<{ Body: CreateTransactionSchema }>,
 	reply: FastifyReply,
 ): Promise<void> => {
-	console.log(`Body${request.body}`);
-	const userId = "FDGF!DH@f3";
+	const userId = "64cfc6f50a39c3ff78f3c4e2";
 	if (!userId) {
 		return reply.status(401).send({ error: "Unauthorized" });
 	}
@@ -25,7 +24,7 @@ export const createTransaction = async (
 	const transaction = result.data;
 
 	try {
-		const category = await prisma.category.findUnique({
+		const category = await prisma.category.findFirst({
 			where: {
 				id: transaction.categoryId,
 				type: transaction.type,
@@ -53,6 +52,6 @@ export const createTransaction = async (
 
 	} catch (error) {
 		request.log.error("Erro ao criar transacao", error);
-		reply.status(500).send({ error: "Internal Server Error" });
+		reply.status(500).send({ error: "Internal Server Errorrrrrrrrr" });
 	}
 };
