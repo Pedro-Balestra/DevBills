@@ -1,8 +1,11 @@
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import prisma from "../../config/prisma";
 import type { GetTransactionSchema } from "../../schemas/transaction.schema";
 import type { TransactionFilter } from "../../types/transaction.type";
+
+dayjs.extend(utc);
 
 export const getTransactions = async (
 	request: FastifyRequest<{ Querystring: GetTransactionSchema }>,
@@ -17,10 +20,10 @@ export const getTransactions = async (
 	const filters: TransactionFilter = { userId };
 
 	if (month && year) {
-		const startDate = dayjs(`${year}-${month.padStart(2, "0")}-01`)
+		const startDate = dayjs.utc(`${year}-${month.padStart(2, "0")}-01`)
 			.startOf("month")
 			.toDate();
-		const endDate = dayjs(startDate).endOf("month").toDate();
+		const endDate = dayjs.utc(startDate).endOf("month").toDate();
 		filters.date = { gte: startDate, lte: endDate };
 	}
 
