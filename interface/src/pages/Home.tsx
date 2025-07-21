@@ -76,6 +76,14 @@ export const Home = () => {
                         </div>
                     </div>
                 </section>
+                <section className="section-app">
+                    <div className="bg-gray-900 p-8 md:p-12 rounded-xl text-center border border-gray-700">
+                        <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Pronto para organizar suas finanças?</h2>
+                        <p className="text-white text-opacity-90 max-w-2xl mx-auto mb-8">Comece a usar o DevBills hoje mesmo e tenha o controle total sobre seu dinheiro. É
+                            gratuito e fácil de usar!</p>
+                        <Button className="mx-auto px-6 py-3">Criar conta Gratuita</Button>
+                    </div>
+                </section>
             </div>
         </div >
     );
