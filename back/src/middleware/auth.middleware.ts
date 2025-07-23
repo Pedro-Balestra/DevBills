@@ -1,4 +1,4 @@
-import { FastifyReply, FastifyRequest } from "fastify";
+import type { FastifyReply, FastifyRequest } from "fastify";
 import admin from 'firebase-admin';
 
 declare module "fastify" {
@@ -16,13 +16,13 @@ export const authMiddleware = async (
         return reply.code(401).send({ error: "Token de autorização não fornecido" })
     }
 
-    const token = authHeader.replace("Bearer", "")
+    const token = authHeader.replace("Bearer ", "")
 
     try {
         const decodedToken = await admin.auth().verifyIdToken(token);
 
         request.userId = decodedToken.uid
-
+        request.log.info(`Usuário autenticado ${request.userId}`)
     } catch (error) {
         request.log.error("Erro ao verificar token", error)
         reply.code(401).send({ error: "Token invalido ou expirado" })
