@@ -1,12 +1,13 @@
-import { signInWithPopup } from "firebase/auth"
-import { GoogleLoginButton } from "../components/GoogleLoginButton"
-import { firebaseAuth, googleAuthProvider } from "../config/firebase"
+import { GoogleLoginButton } from "../components/GoogleLoginButton";
+import { useAuth } from "../hooks/AuthContext";
 
 export const Login = () => {
+    const { singWithGoogle } = useAuth();
 
     const handlerLogin = async () => {
-        const result = await signInWithPopup(firebaseAuth, googleAuthProvider)
-        console.log(result)
+        try {
+            await singWithGoogle();
+        } catch (error) { }
     }
 
     return (
