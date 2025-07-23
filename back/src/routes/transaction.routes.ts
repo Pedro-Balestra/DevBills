@@ -5,9 +5,13 @@ import { createTransaction } from '../controllers/transactions/createTransaction
 import { deleteTransaction } from '../controllers/transactions/deleteTransaction.controller';
 import { getTransactions } from '../controllers/transactions/getTransaction.controller';
 import { getTransactionSummary } from '../controllers/transactions/getTransactionSummary.controller';
+import { authMiddleware } from '../middleware/auth.middleware';
 
 // 🔧 TROCAR FastifyInstance por FastifyInstance com o Zod provider
 export const transactionRoutes: FastifyPluginAsync = async (fastify) => {
+
+	fastify.addHook('preHandler', authMiddleware);
+
 	const app = fastify.withTypeProvider<ZodTypeProvider>();
 
 	app.post(

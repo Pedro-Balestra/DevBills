@@ -6,7 +6,7 @@ export const deleteTransaction = async (
     request: FastifyRequest<{ Params: DeleteTransactionSchema }>,
     reply: FastifyReply,
 ): Promise<void> => {
-    const userId = "64cfc6f50a39c3ff78f3c4e2";
+    const userId = request.userId;
     const { id } = request.params;
     if (!userId) {
         reply.status(401).send({ error: "Unauthorized" });

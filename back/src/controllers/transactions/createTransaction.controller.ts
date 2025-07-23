@@ -9,7 +9,7 @@ export const createTransaction = async (
 	request: FastifyRequest<{ Body: CreateTransactionSchema }>,
 	reply: FastifyReply,
 ): Promise<void> => {
-	const userId = "64cfc6f50a39c3ff78f3c4e2";
+	const userId = request.userId;
 	if (!userId) {
 		return reply.status(401).send({ error: "Unauthorized" });
 	}

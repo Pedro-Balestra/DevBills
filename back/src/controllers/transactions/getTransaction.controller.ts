@@ -11,9 +11,9 @@ export const getTransactions = async (
 	request: FastifyRequest<{ Querystring: GetTransactionSchema }>,
 	reply: FastifyReply,
 ): Promise<void> => {
-	const userId = "64cfc6f50a39c3ff78f3c4e2";
+	const userId = request.userId;
 	if (!userId) {
-		reply.status(401).send({ error: "Unauthorized" });
+		return reply.status(401).send({ error: "Unauthorized" });
 	}
 	const { month, categoryId, type, year } = request.query;
 
