@@ -35,10 +35,24 @@ body {
     @apply bg-gray-950 text-gray-50 min-h-screen font-sans antialiased;
 }
 
-.container-app{
+.container-app {
     @apply max-w-7xl m-auto px-4;
 }
 
-.section-app{
+.section-app {
     @apply py-12 md:py-20
+}
+
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 5px rgba(55, 227, 89, 0.3);
+    }
+
+    100% {
+        box-shadow: 0 0 15px rgba(55, 227, 89, 0.7);
+    }
+}
+
+.glow {
+    animation: glow 2s ease-in-out infinite alternate;
 }
