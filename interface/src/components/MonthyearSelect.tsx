@@ -45,7 +45,7 @@ export const MonthyearSelect = ({ month, year, onMonthChange, onYearChange }: Mo
     }
 
     return (
-        <div className="flex items-center jutify-between bg-gray-900 rounded-lg p-3 border border-gray-700">
+        <div className="flex items-center justify-between bg-gray-900 rounded-lg p-3 border border-gray-700">
             <button
                 type="button"
                 className="p-2 rounded-full hover:bg-gray-800 hover:text-primary-500 transiction-colors cursor-pointer"
