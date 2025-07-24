@@ -73,7 +73,7 @@ export const Dashboard = () => {
                 <Card
                     title="Despesas"
                     icon={<Wallet size={20} className="text-red-600" />}
-                    hover
+                    className="hover:border-red-600 hover:shadow-lg hover:-translate-y-0.5"
                 >
                     <p className="text-2xl font-semibold mt-2 text-red-600"
                     >
