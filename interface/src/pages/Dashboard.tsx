@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { MonthyearSelect } from "../components/MonthyearSelect";
-import { api } from "../services/api";
+import { getTransactions } from "../services/transaction.service";
 
 export const Dashboard = () => {
     const currentDate = new Date();
@@ -8,11 +8,11 @@ export const Dashboard = () => {
     const [month, setMonth] = useState(currentDate.getMonth() + 1);
 
     useEffect(() => {
-        async function getTransactions() {
-            const responde = api.get('/transactions')
+        async function getTransactionsUser() {
+            const responde = await getTransactions({ categoryId: "68795ff463b3be58955ba871" });
             console.log(responde);
         }
-        getTransactions();
+        getTransactionsUser();
     }, [])
 
     return (
