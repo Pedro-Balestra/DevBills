@@ -1,10 +1,10 @@
-import { ArrowUp, TrendingUp, Wallet } from "lucide-react";
+import { ArrowUp, Calendar, TrendingUp, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card } from "../components/Card";
 import { MonthyearSelect } from "../components/MonthyearSelect";
-import { getTransactionSummary } from "../services/transaction.service";
-import type { TransactionSummary } from "../types/transactions";
+import { getTransactionMonthly, getTransactionSummary } from "../services/transaction.service";
+import type { MonthlyItem, TransactionSummary } from "../types/transactions";
 import { formatCurrency } from "../utils/formatters";
 
 const initialSummary: TransactionSummary = {
@@ -24,6 +24,7 @@ export const Dashboard = () => {
     const [year, setYear] = useState<number>(currentDate.getFullYear());
     const [month, setMonth] = useState(currentDate.getMonth() + 1);
     const [summary, setSummary] = useState<TransactionSummary>(initialSummary);
+    const [monthlyItemsData, setMonthlyItemsData] = useState<MonthlyItem[]>([]);
 
     useEffect(() => {
         async function loadTransactionsSummary() {
@@ -33,6 +34,15 @@ export const Dashboard = () => {
         loadTransactionsSummary();
     }, [month, year])
 
+    useEffect(() => {
+        async function loadTransactionsMonthly() {
+            const response = await getTransactionMonthly(month, year, 4);
+            setMonthlyItemsData(response.history);
+            console.log(response.history)
+        }
+        loadTransactionsMonthly();
+    }, [month, year])
+
     const renderPieChatLabel = ({ categoryName, percent }: ChartLabelProps): string => {
         return `${categoryName}: ${(percent * 100).toFixed(1)}%`
     }
@@ -40,6 +50,12 @@ export const Dashboard = () => {
     const formatToolTipValue = (value: number | string): string => {
         return formatCurrency(typeof value === "number" ? value : 0)
     }
+    console.table(monthlyItemsData)
+    const chartData = monthlyItemsData.map((item) => ({
+        ...item,
+        name: item.name.split("/")[0], // pega só o mês: "mar", "abr", ...
+    }));
+
 
     return (
         <div className="container-app py-6">
@@ -115,6 +131,49 @@ export const Dashboard = () => {
                             Nenhuma despesa nesse periodo
                         </div>
                     )}
+                </Card>
+                <Card icon={<Calendar size={20} className="text-primary-500" />}
+                    title="Histórico Mensal"
+                    className="min-h-80 p-2.5"
+                    hover
+                >
+                    <div className="mt-4 h-72">
+                        {monthlyItemsData.length > 0 ? (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart
+                                    data={chartData}
+                                    margin={{ left: 40 }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                                    <XAxis
+                                        dataKey="name"
+                                        stroke="#94A3B8"
+                                        tick={{ style: { textTransform: "capitalize" } }}
+                                    />
+                                    <YAxis
+                                        stroke="#94A3B8"
+                                        tickFormatter={formatCurrency}
+                                        tick={{ style: { fontSize: 14 } }}
+                                    />
+                                    <Tooltip formatter={formatCurrency}
+                                        contentStyle={{
+                                            backgroundColor: "#1a1a1a",
+                                            borderColor: "#2a2a2a"
+                                        }}
+                                        labelStyle={{ color: "#f8f8f8" }}
+                                        cursor={{ fill: 'rgba(255,255,255,0.1)' }}
+                                    />
+                                    <Legend />
+                                    <Bar dataKey="expense" name="Despesas" fill="#FF6384" />
+                                    <Bar dataKey="income" name="Receitas" fill="#37E359" />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="flex items-center justify-center h-64 text-gray-500">
+                                Nenhuma despesa nesse periodo
+                            </div>
+                        )}
+                    </div>
                 </Card>
             </div>
         </div >
