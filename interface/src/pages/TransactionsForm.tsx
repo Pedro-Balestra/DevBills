@@ -1,5 +1,8 @@
-import { useEffect, useId, useState } from "react";
+import { Calendar, DollarSign, Tag } from "lucide-react";
+import { useEffect, useId, useState, type ChangeEvent } from "react";
 import { Card } from "../components/Card";
+import { Input } from "../components/Input";
+import { Select } from "../components/Select";
 import { TransactionTypeSelector } from "../components/TransactionTypeSelector";
 import { getCategories } from "../services/category.service";
 import type { Category } from "../types/category";
@@ -32,9 +35,20 @@ export const TransactionsForm = () => {
         setFormData((prev) => ({ ...prev, type: itemType }))
     }
 
+    const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+
+        const { name, value } = event.target
+        setFormData((prev) => ({
+            ...prev, [name]: value
+        }))
+    }
+
+    const filteredCategories = categories.filter((category) => category.type === formData.type)
+
     useEffect(() => {
         const fetchCategories = async (): Promise<void> => {
             const response = await getCategories()
+            setCategories(response)
         }
         fetchCategories()
     }, [])
@@ -45,7 +59,7 @@ export const TransactionsForm = () => {
                 <h1>Nova Transação</h1>
                 <Card>
                     <form onSubmit={handleSubmit}>
-                        <div>
+                        <div className="mb-4">
                             <label htmlFor={formId}>Tipo de Despesa</label>
                             <TransactionTypeSelector
                                 id={formId}
@@ -53,6 +67,50 @@ export const TransactionsForm = () => {
                                 onChange={handleTransactionType}
                             />
                         </div>
+                        <Input
+                            label="Descrição"
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            placeholder="Ex: Supermecado, Salário, etc..."
+                            required
+                        />
+                        <Input
+                            label="Valor"
+                            name="amount"
+                            type="number"
+                            step="0.01"
+                            min="0.01"
+                            value={formData.amount}
+                            onChange={handleChange}
+                            placeholder="R$ 0,0"
+                            icon={<DollarSign className="w-4 h-4" />}
+                            required
+                        />
+                        <Input
+                            label="Data"
+                            name="date"
+                            type="date"
+                            value={formData.date}
+                            onChange={handleChange}
+                            icon={<Calendar className="w-4 h-4" />}
+                            required
+                        />
+                        <Select
+                            label="Categoria"
+                            name="categoryId"
+                            value={formData.categoryId}
+                            onChange={handleChange}
+                            icon={<Tag className="w-4 h-4" />}
+                            required
+                            options={[
+                                { value: "", label: "Selecione uma categoria" },
+                                ...filteredCategories.map((category) => ({
+                                    value: category.id,
+                                    label: category.name,
+                                }))
+                            ]}
+                        />
                     </form>
                 </Card>
             </div>
