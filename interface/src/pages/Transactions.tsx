@@ -1,11 +1,12 @@
 import { AlertCircle, ArrowDown, ArrowUp, Plus, Search, Trash2 } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, type ChangeEvent } from "react"
 import { Link } from "react-router"
+import { toast } from "react-toastify"
 import { Button } from "../components/Button"
 import { Card } from "../components/Card"
 import { Input } from "../components/Input"
 import { MonthyearSelect } from "../components/MonthyearSelect"
-import { getTransactions } from "../services/transaction.service"
+import { deleteTransactions, getTransactions } from "../services/transaction.service"
 import { TransactionType, type Transaction } from "../types/transactions"
 import { formatCurrency, formatDate } from "../utils/formatters"
 
@@ -17,7 +18,9 @@ export const Transactions = () => {
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<string>("")
     const [transactions, setTransactions] = useState<Transaction[]>([])
+    const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([])
     const [deletingId, setDeletingId] = useState<string>("")
+    const [searchText, setSearchText] = useState<string>("")
 
 
     const fetchTransactions = async (): Promise<void> => {
@@ -26,6 +29,7 @@ export const Transactions = () => {
             setError("")
             const data = await getTransactions({ month, year })
             setTransactions(data)
+            setFilteredTransactions(data)
         } catch (error) {
             setError("Não foi possível carregar as transações, tente novamente")
         } finally {
@@ -33,7 +37,30 @@ export const Transactions = () => {
         }
     }
 
-    const handleDelete = (id: string): void => { }
+    const handleDelete = async (id: string): Promise<void> => {
+        try {
+            setDeletingId(id)
+            await deleteTransactions(id)
+            toast.success("Transação deletada com sucesso!")
+            setTransactions((prev) => prev.filter((t) => t.id !== id))
+
+        } catch (error) {
+            console.error(error)
+            toast.error("Falha ao deletar Transação")
+        } finally {
+            setDeletingId("")
+        }
+    }
+    const confirmDelete = (id: string): void => {
+        if (window.confirm("Tem certeza que deseja deletar essa transação?")) {
+            handleDelete(id)
+        }
+    }
+
+    const handleSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {
+        setSearchText(event.target.value)
+        setFilteredTransactions(transactions.filter(transaction => transaction.description.toUpperCase().includes(event.target.value.toUpperCase())))
+    }
 
     useEffect(() => {
         fetchTransactions()
@@ -65,6 +92,8 @@ export const Transactions = () => {
                     placeholder="Buscar transações..."
                     icon={<Search className="w-4 h-4" />}
                     fullWidth
+                    onChange={handleSearchChange}
+                    value={searchText}
                 />
             </Card>
             <Card className="overflow-hidden">
@@ -92,7 +121,7 @@ export const Transactions = () => {
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
-                        <table className="divide-y divide-gray-700 min-h-full">
+                        <table className="divide-y divide-gray-700 min-h-full w-full">
                             <thead>
                                 <tr>
                                     <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-400 uppercase">
@@ -113,9 +142,9 @@ export const Transactions = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-700 text-gray-400">
-                                {transactions.map((transaction) => (
+                                {filteredTransactions.map((transaction) => (
                                     <tr key={transaction.id} className="hover:bg-gray-800">
-                                        <td className="px-6 py-4 whitespace-nowrap">
+                                        <td className="px-3 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
                                                 <div className="mr-2">
                                                     {transaction.type === TransactionType.INCOME ? (
@@ -129,25 +158,25 @@ export const Transactions = () => {
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
+                                        <td className="px-3 py-4 whitespace-nowrap">
                                             {formatDate(transaction.date)}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
+                                        <td className="px-3 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
                                                 <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: transaction.category.color }} />
                                                 <span className="text-sm">{transaction.category.name}</span>
                                             </div>
 
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
+                                        <td className="px-3 py-4 whitespace-nowrap">
                                             <span className={`${transaction.type === TransactionType.INCOME ? "text-primary-500" : "text-red-500"}`}>
                                                 {formatCurrency(transaction.amount)}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
+                                        <td className="px-3 py-4 whitespace-nowrap">
                                             <button
                                                 type="button"
-                                                onClick={() => handleDelete()}
+                                                onClick={() => confirmDelete(transaction.id)}
                                                 className="text-red-500 hover:text-red-400 rounded-full cursor-pointer"
                                                 disabled={deletingId === transaction.id}
                                             >

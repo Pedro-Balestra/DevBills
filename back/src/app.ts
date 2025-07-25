@@ -25,7 +25,8 @@ const app: FastifyInstance = Fastify({
 
 // Habilita o CORS para toda a aplicação
 app.register(cors, {
-  origin: "*", // Em produção, restrinja para o seu domínio do front-end
+  origin: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // Em produção, restrinja para o seu domínio do front-end
 });
 
 // Habilita o parser de JSON e melhora o tratamento de erros
